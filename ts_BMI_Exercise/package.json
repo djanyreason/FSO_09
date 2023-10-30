@@ -1,0 +1,14 @@
+{
+  "name": "ts_bmi_exercise",
+  "version": "1.0.0",
+  "description": "TS project for FSO exercises 9.1-9.7",
+  "scripts": {
+    "ts-node": "ts-node"
+  },
+  "author": "John Anderson",
+  "license": "ISC",
+  "devDependencies": {
+    "ts-node": "^10.9.1",
+    "typescript": "^5.2.2"
+  }
+}
