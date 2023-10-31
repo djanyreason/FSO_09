@@ -3,7 +3,8 @@
   "version": "1.0.0",
   "description": "TS project for FSO exercises 9.1-9.7",
   "scripts": {
-    "ts-node": "ts-node"
+    "ts-node": "ts-node",
+    "calculateBmi": "ts-node bmiCalculator.ts"
   },
   "author": "John Anderson",
   "license": "ISC",
