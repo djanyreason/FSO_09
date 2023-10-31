@@ -8,6 +8,29 @@ interface analysis {
   average: number;
 }
 
+interface ExerciseInfo {
+  target: number;
+  dailyHours: number[];
+}
+
+const validateArgs = (args: string[]): boolean => {
+  if (args.length === 0) return true;
+  return isNaN(Number(args[0])) ? false : validateArgs(args.slice(1));
+};
+
+const parseExerciseArgs = (args: string[]): ExerciseInfo => {
+  if (args.length < 4) throw new Error('Not enough arguments');
+
+  if (validateArgs(args.slice(2))) {
+    return {
+      target: Number(args[2]),
+      dailyHours: args.slice(3).map((arg) => Number(arg))
+    };
+  } else {
+    throw new Error('Provided values were not numbers!');
+  }
+};
+
 const generateDescription = (rating: number): string => {
   switch (rating) {
     case 3:
@@ -41,4 +64,13 @@ const calculateExercises = (dailyHours: number[], target: number): analysis => {
   return retObj;
 };
 
-console.log(calculateExercises([3, 0, 2, 4.5, 0, 3, 1], 2));
+try {
+  const { target, dailyHours } = parseExerciseArgs(process.argv);
+  console.log(calculateExercises(dailyHours, target));
+} catch (error: unknown) {
+  let errorMessage = 'Something bad happened.';
+  if (error instanceof Error) {
+    errorMessage += ' Error: ' + error.message;
+  }
+  console.log(errorMessage);
+}
