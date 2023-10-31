@@ -1,4 +1,4 @@
-interface analysis {
+export interface analysis {
   periodLength: number;
   trainingDays: number;
   success: boolean;
@@ -44,7 +44,10 @@ const generateDescription = (rating: number): string => {
   }
 };
 
-const calculateExercises = (dailyHours: number[], target: number): analysis => {
+export const calculateExercises = (
+  dailyHours: number[],
+  target: number
+): analysis => {
   const average =
     dailyHours.reduce((total, hour) => hour + total, 0) / dailyHours.length;
   const rating = average >= target ? 3 : average >= target / 2 ? 2 : 1;
