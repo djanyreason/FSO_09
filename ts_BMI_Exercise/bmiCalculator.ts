@@ -17,7 +17,7 @@ const parseBMIArgs = (args: string[]): BodyDims => {
   }
 };
 
-const calculateBmi = (height: number, weight: number): string => {
+export const calculateBmi = (height: number, weight: number): string => {
   const bmi = (10000 * weight) / (height * height);
   if (bmi < 16) return 'Underweight (Severe malnutrition)';
   else if (bmi < 17) return 'Underweight (Moderate malnutrition)';
