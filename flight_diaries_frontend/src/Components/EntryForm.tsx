@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { createEntry } from '../Services/diaryService';
 import { Visibility, Weather, DiaryEntry } from '../types';
+import axios from 'axios';
 
 interface EntryFormProps {
   addEntry: (newFullEntry: DiaryEntry) => string | undefined;
@@ -32,7 +33,9 @@ const EntryForm = (props: EntryFormProps) => {
       setWeather('');
       setComment('');
     } catch (error) {
-      console.log(error);
+      if (axios.isAxiosError(error) && error.response)
+        window.alert(error.response.data);
+      else window.alert('Something went wrong');
     }
   };
 
