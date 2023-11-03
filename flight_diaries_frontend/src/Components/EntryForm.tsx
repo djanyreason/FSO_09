@@ -9,8 +9,8 @@ interface EntryFormProps {
 
 const EntryForm = (props: EntryFormProps) => {
   const [date, setDate] = useState<string>('');
-  const [vis, setVisibility] = useState<string>('');
-  const [wea, setWeather] = useState<string>('');
+  const [vis, setVisibility] = useState<Visibility | undefined>(undefined);
+  const [wea, setWeather] = useState<Weather | undefined>(undefined);
   const [comment, setComment] = useState<string>('');
 
   const { addEntry } = props;
@@ -29,8 +29,6 @@ const EntryForm = (props: EntryFormProps) => {
       });
       addEntry(newDiary);
       setDate('');
-      setVisibility('');
-      setWeather('');
       setComment('');
     } catch (error) {
       if (axios.isAxiosError(error) && error.response)
@@ -43,22 +41,42 @@ const EntryForm = (props: EntryFormProps) => {
     <div>
       <h2>Add new entry</h2>
       <form onSubmit={doSubmit}>
-        date
-        <input value={date} onChange={(event) => setDate(event.target.value)} />
-        <br />
-        visibility
+        date:{' '}
         <input
-          value={vis}
-          onChange={(event) => setVisibility(event.target.value)}
+          type='date'
+          value={date}
+          onChange={(event) => setDate(event.target.value)}
         />
         <br />
-        weather
-        <input
-          value={wea}
-          onChange={(event) => setWeather(event.target.value)}
-        />
+        visibility:{' '}
+        {(Object.keys(Visibility) as (keyof typeof Visibility)[]).map(
+          (key): JSX.Element => (
+            <span key={key}>
+              <input
+                type='radio'
+                name='visibility'
+                onChange={() => setVisibility(Visibility[key])}
+              />
+              {Visibility[key] + ' '}
+            </span>
+          )
+        )}
         <br />
-        comment
+        weather:{' '}
+        {(Object.keys(Weather) as (keyof typeof Weather)[]).map(
+          (key): JSX.Element => (
+            <span key={key}>
+              <input
+                type='radio'
+                name='weather'
+                onChange={() => setWeather(Weather[key])}
+              />
+              {Weather[key] + ' '}
+            </span>
+          )
+        )}
+        <br />
+        comment:{' '}
         <input
           value={comment}
           onChange={(event) => setComment(event.target.value)}
