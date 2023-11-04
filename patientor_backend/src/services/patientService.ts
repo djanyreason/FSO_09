@@ -12,6 +12,10 @@ const getPatients = (): PatientNoPII[] => {
   }));
 };
 
+const getPatient = (id: string): Patient => {
+  return patientData.filter((patient) => patient.id === id)[0];
+};
+
 const addPatient = (newPatientInfo: NewPatient): Patient => {
   const newPatient = {
     id: uuidv4(),
@@ -25,5 +29,6 @@ const addPatient = (newPatientInfo: NewPatient): Patient => {
 
 export default {
   getPatients,
+  getPatient,
   addPatient
 };

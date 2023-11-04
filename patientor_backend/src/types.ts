@@ -10,6 +10,8 @@ export enum Gender {
   NonBinary = 'non-binary'
 }
 
+export interface Entry {}
+
 export interface Patient {
   id: string;
   name: string;
@@ -17,8 +19,9 @@ export interface Patient {
   ssn: string;
   gender: Gender;
   occupation: string;
+  entries: Entry[];
 }
 
-export type PatientNoPII = Omit<Patient, 'ssn'>;
+export type PatientNoPII = Omit<Patient, 'ssn' | 'entries'>;
 
 export type NewPatient = Omit<Patient, 'id'>;
