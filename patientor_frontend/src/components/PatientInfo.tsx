@@ -3,6 +3,7 @@ import { useEffect, useState } from 'react';
 
 import { Patient, Gender } from '../types';
 import PatientService from '../services/patients';
+import Entry from './Entry';
 
 import { Male, Female, Transgender } from '@mui/icons-material';
 import { Typography } from '@mui/material';
@@ -45,6 +46,13 @@ const PatientInfo = () => {
       <br />
       <Typography variant='body1'>ssh: {patient.ssn}</Typography>
       <Typography variant='body1'>occupation: {patient.occupation}</Typography>
+      <br />
+      <Typography variant='h6' style={{ fontWeight: 600 }}>
+        entries
+      </Typography>
+      {patient.entries.map((entry) => (
+        <Entry key={entry.id} entry={entry} />
+      ))}
     </div>
   );
 };
