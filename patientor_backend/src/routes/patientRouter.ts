@@ -9,7 +9,9 @@ router.get('/', (_req, res) => {
 });
 
 router.get('/:id', (req, res) => {
-  res.send(patientService.getPatient(req.params.id));
+  const getResponse = patientService.getPatient(req.params.id);
+  if (getResponse.result === 'Success') res.send(getResponse.patient);
+  else res.status(getResponse.code).send(getResponse.message);
 });
 
 router.post('/', (req, res) => {

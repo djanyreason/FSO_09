@@ -12,8 +12,56 @@ const getPatients = (): PatientNoPII[] => {
   }));
 };
 
-const getPatient = (id: string): Patient => {
-  return patientData.filter((patient) => patient.id === id)[0];
+interface getSuccess {
+  result: 'Success';
+  patient: Patient;
+}
+
+interface getFailure {
+  result: 'Failure';
+  code: number;
+  message: string;
+}
+
+type getResponse = getSuccess | getFailure;
+
+const getPatient = (id: string): getResponse => {
+  const patientListofOne = patientData.filter((patient) => patient.id === id);
+
+  if (patientListofOne.length !== 1)
+    return patientListofOne.length === 0
+      ? {
+          result: 'Failure',
+          code: 404,
+          message: 'ID not present in database'
+        }
+      : {
+          result: 'Failure',
+          code: 500,
+          message: 'ID refers to multiple entries'
+        };
+
+  if (
+    patientListofOne[0].entries.reduce(
+      (check, entry) =>
+        check
+          ? check
+          : entry.type !== 'HealthCheck' &&
+            entry.type !== 'OccupationalHealthcare' &&
+            entry.type !== 'Hospital',
+      false
+    )
+  )
+    return {
+      result: 'Failure',
+      code: 500,
+      message: 'Patient data contains malformatted healthcare entry'
+    };
+
+  return {
+    result: 'Success',
+    patient: patientListofOne[0]
+  };
 };
 
 const addPatient = (newPatientInfo: NewPatient): Patient => {
