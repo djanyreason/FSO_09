@@ -3,10 +3,10 @@ import { useEffect, useState } from 'react';
 
 import { Patient, Gender } from '../types';
 import PatientService from '../services/patients';
-import Entry from './Entry';
+import Entry from './Entry/Entry';
 
 import { Male, Female, Transgender } from '@mui/icons-material';
-import { Typography } from '@mui/material';
+import { Typography, Stack } from '@mui/material';
 
 const PatientInfo = () => {
   const navigate = useNavigate();
@@ -50,9 +50,12 @@ const PatientInfo = () => {
       <Typography variant='h6' style={{ fontWeight: 600 }}>
         entries
       </Typography>
-      {patient.entries.map((entry) => (
-        <Entry key={entry.id} entry={entry} />
-      ))}
+      <br />
+      <Stack spacing={1}>
+        {patient.entries.map((entry) => (
+          <Entry key={entry.id} entry={entry} />
+        ))}
+      </Stack>
     </div>
   );
 };
