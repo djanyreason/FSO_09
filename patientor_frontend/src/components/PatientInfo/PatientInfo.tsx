@@ -1,12 +1,13 @@
 import { useMatch, useNavigate } from 'react-router-dom';
 import { useEffect, useState } from 'react';
 
-import { Patient, Gender } from '../types';
-import PatientService from '../services/patients';
+import { Patient, Gender, Entry as EntryType } from '../../types';
+import PatientService from '../../services/patients';
 import Entry from './Entry/Entry';
 
 import { Male, Female, Transgender } from '@mui/icons-material';
 import { Typography, Stack } from '@mui/material';
+import NewHealthCheckEntryForm from './NewHealthCheckEntryForm';
 
 const PatientInfo = () => {
   const navigate = useNavigate();
@@ -14,7 +15,7 @@ const PatientInfo = () => {
   const [patient, setPatient] = useState<Patient | null>(null);
 
   useEffect(() => {
-    if (match === null || !match.params.id || match.params.id === 'letstest') {
+    if (match === null || !match.params.id) {
       navigate('/');
     } else {
       PatientService.getOne(match.params.id)
@@ -29,6 +30,11 @@ const PatientInfo = () => {
   }, [match, navigate]);
 
   if (!patient) return <h2>loading...</h2>;
+
+  const addEntry = (newEntry: EntryType): void => {
+    if (!patient.entries) setPatient({ ...patient, entries: [newEntry] });
+    else setPatient({ ...patient, entries: patient.entries.concat(newEntry) });
+  };
 
   return (
     <div>
@@ -50,6 +56,8 @@ const PatientInfo = () => {
       <Typography variant='h6' style={{ fontWeight: 600 }}>
         entries
       </Typography>
+      <br />
+      <NewHealthCheckEntryForm addEntry={addEntry} id={patient.id} />
       <br />
       <Stack spacing={1}>
         {patient.entries.map((entry) => (

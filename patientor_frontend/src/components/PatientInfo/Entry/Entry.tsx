@@ -2,7 +2,7 @@ import HealthCheckEntry from './HealthCheckEntry';
 import OccupationalHealthcareEntry from './OccupationalHealthcareEntry';
 import HospitalEntry from './HospitalEntry';
 
-import { Entry as EntryType } from '../../types';
+import { Entry as EntryType } from '../../../types';
 
 interface EntryProps {
   entry: EntryType;

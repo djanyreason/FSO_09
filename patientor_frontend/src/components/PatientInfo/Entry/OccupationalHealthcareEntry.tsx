@@ -1,21 +1,20 @@
 import { useState, useEffect } from 'react';
 
-import DiagnosisRouter from '../../services/diagnoses';
+import DiagnosisRouter from '../../../services/diagnoses';
 
 import {
-  HealthCheckEntry as HCEType,
-  HealthCheckRating,
-  Diagnosis
-} from '../../types';
+  Diagnosis,
+  OccupationalHealthcareEntry as OHEType
+} from '../../../types';
 
 import { Box, Typography } from '@mui/material';
-import { Favorite, FactCheck } from '@mui/icons-material';
+import { MedicalServices } from '@mui/icons-material';
 
 interface EntryProps {
-  entry: HCEType;
+  entry: OHEType;
 }
 
-const HealthCheckEntry = (props: EntryProps) => {
+const OccupationalHealthcareEntry = (props: EntryProps) => {
   const entry = props.entry;
 
   const [diagnoses, setDiagnoses] = useState<Diagnosis[]>([]);
@@ -26,34 +25,14 @@ const HealthCheckEntry = (props: EntryProps) => {
     });
   }, []);
 
-  let color = '';
-
-  switch (entry.healthCheckRating) {
-    case HealthCheckRating.Healthy:
-      color = 'green';
-      break;
-    case HealthCheckRating.LowRisk:
-      color = 'yellow';
-      break;
-    case HealthCheckRating.HighRisk:
-      color = 'orange';
-      break;
-    case HealthCheckRating.CriticalRisk:
-      color = 'red';
-      break;
-    default:
-      color = 'black';
-  }
-
   return (
-    <Box sx={{ p: 1, border: '1px solid black', borderRadius: '5px' }}>
+    <Box sx={{ border: '1px solid black', borderRadius: '5px' }} p={1} m={1}>
       <Typography variant='body1'>
-        {entry.date} <FactCheck />
+        {entry.date} <MedicalServices /> {entry.employerName}
       </Typography>
       <Typography variant='body1'>
         <em>{entry.description}</em>
       </Typography>
-      <Favorite sx={{ color }} />
       {!entry.diagnosisCodes ? (
         <></>
       ) : (
@@ -70,9 +49,17 @@ const HealthCheckEntry = (props: EntryProps) => {
           ))}
         </ul>
       )}
+      {!entry.sickLeave ? (
+        <></>
+      ) : (
+        <Typography variant='body1'>
+          sick leave from {entry.sickLeave.startDate} to{' '}
+          {entry.sickLeave.endDate}
+        </Typography>
+      )}
       <Typography variant='body1'>diagnose by {entry.specialist}</Typography>
     </Box>
   );
 };
 
-export default HealthCheckEntry;
+export default OccupationalHealthcareEntry;

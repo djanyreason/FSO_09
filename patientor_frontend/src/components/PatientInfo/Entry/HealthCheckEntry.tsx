@@ -1,17 +1,21 @@
 import { useState, useEffect } from 'react';
 
-import DiagnosisRouter from '../../services/diagnoses';
+import DiagnosisRouter from '../../../services/diagnoses';
 
-import { Diagnosis, HospitalEntry as HEType } from '../../types';
+import {
+  HealthCheckEntry as HCEType,
+  HealthCheckRating,
+  Diagnosis
+} from '../../../types';
 
 import { Box, Typography } from '@mui/material';
-import { LocalHospital } from '@mui/icons-material';
+import { Favorite, FactCheck } from '@mui/icons-material';
 
 interface EntryProps {
-  entry: HEType;
+  entry: HCEType;
 }
 
-const HospitalEntry = (props: EntryProps) => {
+const HealthCheckEntry = (props: EntryProps) => {
   const entry = props.entry;
 
   const [diagnoses, setDiagnoses] = useState<Diagnosis[]>([]);
@@ -22,14 +26,34 @@ const HospitalEntry = (props: EntryProps) => {
     });
   }, []);
 
+  let color = '';
+
+  switch (entry.healthCheckRating) {
+    case HealthCheckRating.Healthy:
+      color = 'green';
+      break;
+    case HealthCheckRating.LowRisk:
+      color = 'yellow';
+      break;
+    case HealthCheckRating.HighRisk:
+      color = 'orange';
+      break;
+    case HealthCheckRating.CriticalRisk:
+      color = 'red';
+      break;
+    default:
+      color = 'black';
+  }
+
   return (
-    <Box sx={{ p: 1, border: '1px solid black', borderRadius: '5px' }}>
+    <Box sx={{ border: '1px solid black', borderRadius: '5px' }} p={1} m={1}>
       <Typography variant='body1'>
-        {entry.date} <LocalHospital />
+        {entry.date} <FactCheck />
       </Typography>
       <Typography variant='body1'>
         <em>{entry.description}</em>
       </Typography>
+      <Favorite sx={{ color }} />
       {!entry.diagnosisCodes ? (
         <></>
       ) : (
@@ -46,16 +70,9 @@ const HospitalEntry = (props: EntryProps) => {
           ))}
         </ul>
       )}
-      {!entry.discharge ? (
-        <></>
-      ) : (
-        <Typography variant='body1'>
-          Discharged on {entry.discharge.date} due to {entry.discharge.criteria}
-        </Typography>
-      )}
       <Typography variant='body1'>diagnose by {entry.specialist}</Typography>
     </Box>
   );
 };
 
-export default HospitalEntry;
+export default HealthCheckEntry;

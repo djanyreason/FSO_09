@@ -1,17 +1,17 @@
 import { useState, useEffect } from 'react';
 
-import DiagnosisRouter from '../../services/diagnoses';
+import DiagnosisRouter from '../../../services/diagnoses';
 
-import { Diagnosis, OccupationalHealthcareEntry as OHEType } from '../../types';
+import { Diagnosis, HospitalEntry as HEType } from '../../../types';
 
 import { Box, Typography } from '@mui/material';
-import { MedicalServices } from '@mui/icons-material';
+import { LocalHospital } from '@mui/icons-material';
 
 interface EntryProps {
-  entry: OHEType;
+  entry: HEType;
 }
 
-const OccupationalHealthcareEntry = (props: EntryProps) => {
+const HospitalEntry = (props: EntryProps) => {
   const entry = props.entry;
 
   const [diagnoses, setDiagnoses] = useState<Diagnosis[]>([]);
@@ -25,7 +25,7 @@ const OccupationalHealthcareEntry = (props: EntryProps) => {
   return (
     <Box sx={{ p: 1, border: '1px solid black', borderRadius: '5px' }}>
       <Typography variant='body1'>
-        {entry.date} <MedicalServices /> {entry.employerName}
+        {entry.date} <LocalHospital />
       </Typography>
       <Typography variant='body1'>
         <em>{entry.description}</em>
@@ -46,12 +46,11 @@ const OccupationalHealthcareEntry = (props: EntryProps) => {
           ))}
         </ul>
       )}
-      {!entry.sickLeave ? (
+      {!entry.discharge ? (
         <></>
       ) : (
         <Typography variant='body1'>
-          sick leave from {entry.sickLeave.startDate} to{' '}
-          {entry.sickLeave.endDate}
+          Discharged on {entry.discharge.date} due to {entry.discharge.criteria}
         </Typography>
       )}
       <Typography variant='body1'>diagnose by {entry.specialist}</Typography>
@@ -59,4 +58,4 @@ const OccupationalHealthcareEntry = (props: EntryProps) => {
   );
 };
 
-export default OccupationalHealthcareEntry;
+export default HospitalEntry;
