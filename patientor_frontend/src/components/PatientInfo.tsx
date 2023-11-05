@@ -16,10 +16,14 @@ const PatientInfo = () => {
     if (match === null || !match.params.id || match.params.id === 'letstest') {
       navigate('/');
     } else {
-      PatientService.getOne(match.params.id).then((response) => {
-        if (!response) navigate('/');
-        setPatient(response);
-      });
+      PatientService.getOne(match.params.id)
+        .then((response) => {
+          if (!response) navigate('/');
+          setPatient(response);
+        })
+        .catch(() => {
+          navigate('/');
+        });
     }
   }, [match, navigate]);
 
