@@ -7,7 +7,7 @@ import Entry from './Entry/Entry';
 
 import { Male, Female, Transgender } from '@mui/icons-material';
 import { Typography, Stack } from '@mui/material';
-import NewHealthCheckEntryForm from './NewHealthCheckEntryForm';
+import NewEntryForm from './NewEntryForm';
 
 const PatientInfo = () => {
   const navigate = useNavigate();
@@ -53,11 +53,11 @@ const PatientInfo = () => {
       <Typography variant='body1'>ssh: {patient.ssn}</Typography>
       <Typography variant='body1'>occupation: {patient.occupation}</Typography>
       <br />
+      <NewEntryForm addEntry={addEntry} id={patient.id} />
+      <br />
       <Typography variant='h6' style={{ fontWeight: 600 }}>
         entries
       </Typography>
-      <br />
-      <NewHealthCheckEntryForm addEntry={addEntry} id={patient.id} />
       <br />
       <Stack spacing={1}>
         {patient.entries.map((entry) => (

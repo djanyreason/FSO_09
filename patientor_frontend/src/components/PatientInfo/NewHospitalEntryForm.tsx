@@ -11,38 +11,39 @@ interface NHCEFProps {
   id: string;
 }
 
-const NewHealthCheckEntryForm = (props: NHCEFProps): JSX.Element => {
+const NewHospitalEntryForm = (props: NHCEFProps): JSX.Element => {
   const { addEntry, id } = props;
 
   const [date, setDate] = useState<string>('');
   const [specialist, setSpecialist] = useState<string>('');
   const [description, setDescription] = useState<string>('');
   const [dcs, setDCs] = useState<string>('');
-  const [hcr, setHCR] = useState<string>('');
+  const [dischargeDate, setDischargeDate] = useState<string>('');
+  const [dischargeCriteria, setDischargeCriteria] = useState<string>('');
 
   const reset = () => {
     setDCs('');
     setDate('');
     setSpecialist('');
     setDescription('');
-    setHCR('');
+    setDischargeCriteria('');
+    setDischargeDate('');
   };
 
   const onSubmit = async (event: React.SyntheticEvent) => {
     event.preventDefault();
 
-    if (isNaN(Number(hcr))) {
-      window.alert('Healthcheck Rating must be a number');
-      return;
-    }
-    const healthCheckRating = Number(hcr);
-    const newEvent = { date, specialist, description, healthCheckRating };
+    const newEvent = { date, specialist, description };
     if (dcs !== '')
       Object.assign(newEvent, {
         diagnosisCodes: dcs.split(',').map((code) => code.trim())
       });
+    if (dischargeCriteria !== '' || dischargeDate !== '')
+      Object.assign(newEvent, {
+        discharge: { date: dischargeDate, criteria: dischargeCriteria }
+      });
 
-    PatientService.addEntrytoPatient(id, { ...newEvent, type: 'HealthCheck' })
+    PatientService.addEntrytoPatient(id, { ...newEvent, type: 'Hospital' })
       .then((response) => {
         addEntry(response);
         reset();
@@ -73,9 +74,14 @@ const NewHealthCheckEntryForm = (props: NHCEFProps): JSX.Element => {
           onChange={(event) => setSpecialist(event.target.value)}
         />
         <TextField
-          label='HealthCheck rating'
-          value={hcr}
-          onChange={(event) => setHCR(event.target.value)}
+          label='Discharge Date'
+          value={dischargeDate}
+          onChange={(event) => setDischargeDate(event.target.value)}
+        />
+        <TextField
+          label='Discharge Criteria'
+          value={dischargeCriteria}
+          onChange={(event) => setDischargeCriteria(event.target.value)}
         />
         <TextField
           label='Diagnosis codes'
@@ -96,4 +102,4 @@ const NewHealthCheckEntryForm = (props: NHCEFProps): JSX.Element => {
   );
 };
 
-export default NewHealthCheckEntryForm;
+export default NewHospitalEntryForm;
