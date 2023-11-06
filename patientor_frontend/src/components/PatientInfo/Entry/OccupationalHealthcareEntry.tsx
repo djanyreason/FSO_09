@@ -1,7 +1,3 @@
-import { useState, useEffect } from 'react';
-
-import DiagnosisRouter from '../../../services/diagnoses';
-
 import {
   Diagnosis,
   OccupationalHealthcareEntry as OHEType
@@ -12,18 +8,11 @@ import { MedicalServices } from '@mui/icons-material';
 
 interface EntryProps {
   entry: OHEType;
+  diagnoses: Diagnosis[];
 }
 
 const OccupationalHealthcareEntry = (props: EntryProps) => {
-  const entry = props.entry;
-
-  const [diagnoses, setDiagnoses] = useState<Diagnosis[]>([]);
-
-  useEffect(() => {
-    DiagnosisRouter.getAll().then((response) => {
-      setDiagnoses(response);
-    });
-  }, []);
+  const { entry, diagnoses } = props;
 
   return (
     <Box sx={{ border: '1px solid black', borderRadius: '5px' }} p={1} m={1}>

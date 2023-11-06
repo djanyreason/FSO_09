@@ -1,7 +1,21 @@
 import { useState } from 'react';
 import axios from 'axios';
 
-import { Button, TextField, Stack } from '@mui/material';
+import {
+  Button,
+  TextField,
+  Stack,
+  Select,
+  SelectChangeEvent,
+  MenuItem,
+  Checkbox,
+  ListItemText,
+  InputLabel,
+  OutlinedInput,
+  FormControl
+} from '@mui/material';
+import { DatePicker } from '@mui/x-date-pickers';
+import { Dayjs } from 'dayjs';
 
 import { Entry } from '../../types';
 import PatientService from '../../services/patients';
@@ -9,41 +23,60 @@ import PatientService from '../../services/patients';
 interface NHCEFProps {
   addEntry: (newEntry: Entry) => void;
   id: string;
+  diagnoses: string[];
 }
 
 const NewOccupationalHealthcareEntryForm = (props: NHCEFProps): JSX.Element => {
-  const { addEntry, id } = props;
+  const { addEntry, id, diagnoses } = props;
 
-  const [date, setDate] = useState<string>('');
+  const [day, setDay] = useState<Dayjs | null>(null);
   const [specialist, setSpecialist] = useState<string>('');
   const [description, setDescription] = useState<string>('');
-  const [dcs, setDCs] = useState<string>('');
+  const [dcs, setDCs] = useState<string[]>([]);
   const [employerName, setEmployerName] = useState<string>('');
-  const [sickLeaveStart, setSickLeaveStart] = useState<string>('');
-  const [sickLeaveEnd, setSickLeaveEnd] = useState<string>('');
+  const [sickLeaveStart, setSickLeaveStart] = useState<Dayjs | null>(null);
+  const [sickLeaveEnd, setSickLeaveEnd] = useState<Dayjs | null>(null);
 
   const reset = () => {
-    setDCs('');
-    setDate('');
+    setDCs([]);
+    setDay(null);
     setSpecialist('');
     setDescription('');
     setEmployerName('');
-    setSickLeaveStart('');
-    setSickLeaveEnd('');
+    setSickLeaveStart(null);
+    setSickLeaveEnd(null);
   };
 
   const onSubmit = async (event: React.SyntheticEvent) => {
     event.preventDefault();
 
+    const date = !day
+      ? ''
+      : day.year() + '-' + (1 + day.month()) + '-' + day.date();
     const newEvent = { date, specialist, description, employerName };
-    if (dcs !== '')
+    if (dcs.length !== 0)
       Object.assign(newEvent, {
-        diagnosisCodes: dcs.split(',').map((code) => code.trim())
+        diagnosisCodes: dcs
       });
 
-    if (sickLeaveStart !== '' || sickLeaveEnd !== '')
+    if (sickLeaveStart !== null || sickLeaveEnd !== null)
       Object.assign(newEvent, {
-        sickLeave: { startDate: sickLeaveStart, endDate: sickLeaveEnd }
+        sickLeave: {
+          startDate: !sickLeaveStart
+            ? ''
+            : sickLeaveStart.year() +
+              '-' +
+              (1 + sickLeaveStart.month()) +
+              '-' +
+              sickLeaveStart.date(),
+          endDate: !sickLeaveEnd
+            ? ''
+            : sickLeaveEnd.year() +
+              '-' +
+              (1 + sickLeaveEnd.month()) +
+              '-' +
+              sickLeaveEnd.date()
+        }
       });
 
     PatientService.addEntrytoPatient(id, {
@@ -61,6 +94,14 @@ const NewOccupationalHealthcareEntryForm = (props: NHCEFProps): JSX.Element => {
       });
   };
 
+  const handleDCChange = (event: SelectChangeEvent<typeof dcs>) => {
+    setDCs(
+      typeof event.target.value === 'string'
+        ? event.target.value.split(',')
+        : event.target.value
+    );
+  };
+
   return (
     <form onSubmit={onSubmit}>
       <Stack spacing={1}>
@@ -69,10 +110,10 @@ const NewOccupationalHealthcareEntryForm = (props: NHCEFProps): JSX.Element => {
           value={description}
           onChange={(event) => setDescription(event.target.value)}
         />
-        <TextField
+        <DatePicker
           label='Date'
-          value={date}
-          onChange={(event) => setDate(event.target.value)}
+          value={day}
+          onChange={(newValue) => setDay(newValue)}
         />
         <TextField
           label='Specialist'
@@ -84,21 +125,35 @@ const NewOccupationalHealthcareEntryForm = (props: NHCEFProps): JSX.Element => {
           value={employerName}
           onChange={(event) => setEmployerName(event.target.value)}
         />
-        <TextField
+        <DatePicker
           label='Sick Leave Start Date'
           value={sickLeaveStart}
-          onChange={(event) => setSickLeaveStart(event.target.value)}
+          onChange={(newValue) => setSickLeaveStart(newValue)}
         />
-        <TextField
+        <DatePicker
           label='Sick Leave End Date'
           value={sickLeaveEnd}
-          onChange={(event) => setSickLeaveEnd(event.target.value)}
+          onChange={(newValue) => setSickLeaveEnd(newValue)}
         />
-        <TextField
-          label='Diagnosis codes'
-          value={dcs}
-          onChange={(event) => setDCs(event.target.value)}
-        />
+        <FormControl>
+          <InputLabel id='diagnosis-codes'>Diagnosis Codes</InputLabel>
+          <Select
+            id='diagnosis-codes'
+            multiple
+            value={dcs}
+            onChange={handleDCChange}
+            input={<OutlinedInput label='Diagnosis Codes' />}
+            renderValue={(selected) => selected.join(', ')}
+            MenuProps={{ PaperProps: { style: { maxHeight: 224 } } }}
+          >
+            {diagnoses.map((d) => (
+              <MenuItem key={d} value={d}>
+                <Checkbox checked={dcs.indexOf(d) > -1} />
+                <ListItemText primary={d} />
+              </MenuItem>
+            ))}
+          </Select>
+        </FormControl>
       </Stack>
       <br />
       <Stack direction='row' justifyContent='space-between'>

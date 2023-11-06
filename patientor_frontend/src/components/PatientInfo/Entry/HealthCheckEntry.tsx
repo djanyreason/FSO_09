@@ -1,7 +1,3 @@
-import { useState, useEffect } from 'react';
-
-import DiagnosisRouter from '../../../services/diagnoses';
-
 import {
   HealthCheckEntry as HCEType,
   HealthCheckRating,
@@ -13,18 +9,11 @@ import { Favorite, FactCheck } from '@mui/icons-material';
 
 interface EntryProps {
   entry: HCEType;
+  diagnoses: Diagnosis[];
 }
 
 const HealthCheckEntry = (props: EntryProps) => {
-  const entry = props.entry;
-
-  const [diagnoses, setDiagnoses] = useState<Diagnosis[]>([]);
-
-  useEffect(() => {
-    DiagnosisRouter.getAll().then((response) => {
-      setDiagnoses(response);
-    });
-  }, []);
+  const { entry, diagnoses } = props;
 
   let color = '';
 

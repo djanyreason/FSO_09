@@ -1,7 +1,3 @@
-import { useState, useEffect } from 'react';
-
-import DiagnosisRouter from '../../../services/diagnoses';
-
 import { Diagnosis, HospitalEntry as HEType } from '../../../types';
 
 import { Box, Typography } from '@mui/material';
@@ -9,18 +5,11 @@ import { LocalHospital } from '@mui/icons-material';
 
 interface EntryProps {
   entry: HEType;
+  diagnoses: Diagnosis[];
 }
 
 const HospitalEntry = (props: EntryProps) => {
-  const entry = props.entry;
-
-  const [diagnoses, setDiagnoses] = useState<Diagnosis[]>([]);
-
-  useEffect(() => {
-    DiagnosisRouter.getAll().then((response) => {
-      setDiagnoses(response);
-    });
-  }, []);
+  const { entry, diagnoses } = props;
 
   return (
     <Box sx={{ p: 1, border: '1px solid black', borderRadius: '5px' }}>
